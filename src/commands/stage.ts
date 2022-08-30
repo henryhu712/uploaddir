@@ -14,6 +14,8 @@ const concat = require('concat-stream')
  * @returns {Promise}
  */
 function zipDirectory(sourceDir: string, outPath: string): Promise<void> {
+  console.log('正在压缩文件夹', sourceDir, '...')
+
   const archive = archiver('zip', { zlib: { level: 9 }});
   const stream = fs.createWriteStream(outPath);
 
@@ -26,12 +28,12 @@ function zipDirectory(sourceDir: string, outPath: string): Promise<void> {
 
     stream.on('close', () => resolve());
     archive.finalize();
-    resolve()
+    //resolve()
   });
 }
 
 export default class Stage extends Command {
-  static description = 'describe the command here'
+  static description = '自动部署vue，modelslib'
 
   static examples = [
     '<%= config.bin %> <%= command.id %>',
@@ -39,17 +41,37 @@ export default class Stage extends Command {
 
   static flags = {
     // flag with a value (-n, --name=VALUE)
-    name: Flags.string({char: 'n', description: 'name to print'}),
+    dir: Flags.string({char: 'd', description: '设置要上传的文件夹，默认文件夹为dist。'}),
     // flag with no value (-f, --force)
-    force: Flags.boolean({char: 'f'}),
+    //force: Flags.boolean({char: 'f'}),
   }
 
   static args = [{name: 'file'}]
 
   public async run(): Promise<void> {
-    /*
     const {args, flags} = await this.parse(Stage)
 
+    let targetDir = flags.dir ? flags.dir : 'dist'
+    let targetFile = `${targetDir}.zip`
+
+    //console.log('args: ', args)
+    //console.log('flags: ', flags)
+    //if (flags.dir) {
+    //  targetDir = flags.dir
+    //}
+
+    // 检查文件夹是否存在
+    if (!fs.existsSync(targetDir)) {
+      console.log(`文件夹 ${targetDir} 不存在！终止上传。`)
+      return
+    }
+
+    // 删除临时文件
+    if (fs.existsSync(targetFile)) {
+      fs.unlinkSync(targetFile)
+    }
+
+    /*
     const name = flags.name ?? 'world'
     this.log(`hello ${name} from /home/hh/uploaddir/src/commands/stage.ts`)
     if (args.file && flags.force) {
@@ -78,20 +100,25 @@ export default class Stage extends Command {
 
 
     try {
-      const aa = await zipDirectory('src', 'target31.zip')
+      await zipDirectory(targetDir, targetFile)
+      console.log('压缩文件夹完成！')
 
       const url = 'https://wwbim.com/deploy/stage'
 
       const upload = async () => {
         try {
-          const file = fs.createReadStream('target30.zip');
+          //targetFile = 'dist2.zip'
+          const file = await fs.createReadStream(targetFile);
           const title = 'My file';
 
           const form = new FormData();
           form.append('title', title);
           form.append('file', file);
 
+          console.log('正在上传文件...')
           const resp = await axios.post(url, form, {
+            'maxBodyLength': Infinity,
+            'maxContentLength': Infinity,
             headers: {
               ...form.getHeaders(),
             }
@@ -105,7 +132,7 @@ export default class Stage extends Command {
         }
       }
 
-      upload().then(resp => console.log(resp));
+      upload().then(resp => console.log('上传完成！'));
 
 
       /*
@@ -175,7 +202,7 @@ export default class Stage extends Command {
       //});
       */
 
-      this.log('yes, here is the stage command')
+      //this.log('yes, here is the stage command')
     } catch (err) {
       //this.error(err)
       this.log('yes, here is the stage command')
