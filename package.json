@@ -1,10 +1,10 @@
 {
-  "name": "uploaddir",
-  "version": "0.0.0",
+  "name": "deploy",
+  "version": "0.0.2",
   "description": "Upload directories.",
   "author": "Henry",
   "bin": {
-    "uploaddir": "./bin/run"
+    "deploy": "./bin/run"
   },
   "homepage": "https://github.com/henryhu712/uploaddir",
   "license": "MIT",
@@ -19,11 +19,18 @@
   "dependencies": {
     "@oclif/core": "^1",
     "@oclif/plugin-help": "^5",
-    "@oclif/plugin-plugins": "^2.1.0"
+    "@oclif/plugin-plugins": "^2.1.0",
+    "archiver": "^5.3.1",
+    "axios": "^0.27.2",
+    "concat": "^1.0.3",
+    "concat-stream": "^2.0.0",
+    "form-data": "^4.0.0"
   },
   "devDependencies": {
     "@oclif/test": "^2",
+    "@types/archiver": "^5.3.1",
     "@types/chai": "^4",
+    "@types/concat-stream": "^2.0.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "^16.9.4",
     "chai": "^4",
