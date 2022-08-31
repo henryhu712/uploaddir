@@ -1,4 +1,5 @@
 import {Command, Flags} from '@oclif/core'
+import axios from 'axios'
 
 export default class Stagenode extends Command {
   static description = 'describe the command here'
@@ -19,10 +20,11 @@ export default class Stagenode extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Stagenode)
 
-    const name = flags.name ?? 'world'
-    this.log(`hello ${name} from /home/hh/uploaddir/src/commands/stagenode.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    try {
+      const url = 'https://wwbim.com/deploy/stagenode'
+      const resp = await axios.get(url)
+    } catch(err: any) {
+      //return new Error(err.message);
     }
   }
 }
