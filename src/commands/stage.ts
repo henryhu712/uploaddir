@@ -109,10 +109,10 @@ export default class Stage extends Command {
         try {
           //targetFile = 'dist2.zip'
           const file = await fs.createReadStream(targetFile);
-          const title = 'My file';
+          const secret = 'kfi8i#W0df';
 
           const form = new FormData();
-          form.append('title', title);
+          form.append('secret', secret);
           form.append('file', file);
 
           console.log('正在上传文件...')
